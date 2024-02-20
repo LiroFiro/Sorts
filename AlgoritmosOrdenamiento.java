@@ -74,3 +74,98 @@ public class AlgoritmosOrdenamiento {
         }
     }
 
+    // Método para generar números aleatorios y guardarlos en un archivo CSV
+    private static void generarYGuardarNumerosAleatorios(String archivo, int cantidad, int rango) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            Random random = new Random();
+            for (int i = 0; i < cantidad; i++) {
+                writer.write(String.valueOf(random.nextInt(rango)));
+                writer.newLine();
+            }
+            System.out.println("Datos aleatorios generados y guardados en el archivo: " + archivo);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+        }
+    }
+
+    // Método para leer los datos desde un archivo CSV y guardarlos en un arreglo
+    private static int[] leerDatosDesdeArchivo(String archivo, int cantidad) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            List<Integer> lista = new ArrayList<>();
+            String linea;
+            int count = 0;
+            while ((linea = br.readLine()) != null && count < cantidad) {
+                lista.add(Integer.parseInt(linea));
+                count++;
+            }
+            return lista.stream().mapToInt(Integer::intValue).toArray();
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo: " + e.getMessage());
+            return new int[0];
+        }
+    }
+
+    // Método para guardar los datos en un archivo CSV
+    private static void guardarDatosEnCSV(String archivo, int[] datos) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            for (int dato : datos) {
+                writer.write(String.valueOf(dato));
+                writer.newLine();
+            }
+            System.out.println("Datos ordenados guardados en el archivo: " + archivo);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+        }
+    }
+
+    // Método para revertir un arreglo
+    private static void reverseArray(int[] arr) {
+        int start = 0;
+        int end = arr.length - 1;
+        while (start < end) {
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            start++;
+            end--;
+        }
+    }
+
+    // Método para ordenar los datos y guardarlos en un archivo CSV
+    private static void ordenarYGuardar(int[] datos, String nombreAlgoritmo, boolean descendente) {
+        switch (nombreAlgoritmo) {
+            case "Gnome Sort":
+                gnomeSort(datos);
+                break;
+            case "Merge Sort":
+                mergeSort(datos);
+                break;
+            case "Quick Sort":
+                quickSort(datos);
+                break;
+            case "Radix Sort":
+                radixSort(datos);
+                break;
+            case "Selection Sort":
+                selectionSort(datos);
+                break;
+            case "Shell Sort":
+                shellSort(datos);
+                break;
+            case "Heap Sort":
+                heapSort(datos);
+                break;
+            default:
+                System.out.println("Algoritmo no válido.");
+                return;
+        }
+
+        if (descendente) {
+            reverseArray(datos);
+        }
+
+        String orden = descendente ? "descendente" : "ascendente";
+        String archivo = "C:\\Users\\lirof\\OneDrive\\Escritorio\\HTW\\" + nombreAlgoritmo.toLowerCase().replace(" ", "_") + "_" + orden + ".csv";
+        guardarDatosEnCSV(archivo, datos);
+    }
+
