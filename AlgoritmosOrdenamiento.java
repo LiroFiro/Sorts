@@ -169,3 +169,177 @@ public class AlgoritmosOrdenamiento {
         guardarDatosEnCSV(archivo, datos);
     }
 
+    // Implementación de Gnome Sort
+    private static void gnomeSort(int[] datos) {
+        for (int i = 1; i < datos.length;) {
+            if (i == 0 || datos[i - 1] <= datos[i]) {
+                i++;
+            } else {
+                int temp = datos[i];
+                datos[i] = datos[i - 1];
+                datos[--i] = temp;
+            }
+        }
+    }
+
+    // Implementación de Merge Sort
+    private static void mergeSort(int[] datos) {
+        if (datos.length > 1) {
+            int mid = datos.length / 2;
+            int[] left = Arrays.copyOfRange(datos, 0, mid);
+            int[] right = Arrays.copyOfRange(datos, mid, datos.length);
+
+            mergeSort(left);
+            mergeSort(right);
+
+            int i = 0, j = 0, k = 0;
+            while (i < left.length && j < right.length) {
+                if (left[i] < right[j]) {
+                    datos[k++] = left[i++];
+                } else {
+                    datos[k++] = right[j++];
+                }
+            }
+            while (i < left.length) {
+                datos[k++] = left[i++];
+            }
+            while (j < right.length) {
+                datos[k++] = right[j++];
+            }
+        }
+    }
+
+    // Implementación de Quick Sort
+    private static void quickSort(int[] datos) {
+        quickSort(datos, 0, datos.length - 1);
+    }
+
+    private static void quickSort(int[] datos, int low, int high) {
+        if (low < high) {
+            int pivotIndex = partition(datos, low, high);
+            quickSort(datos, low, pivotIndex - 1);
+            quickSort(datos, pivotIndex + 1, high);
+        }
+    }
+
+    private static int partition(int[] datos, int low, int high) {
+        int pivot = datos[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (datos[j] < pivot) {
+                i++;
+                int temp = datos[i];
+                datos[i] = datos[j];
+                datos[j] = temp;
+            }
+        }
+        int temp = datos[i + 1];
+        datos[i + 1] = datos[high];
+        datos[high] = temp;
+        return i + 1;
+    }
+
+    // Implementación de Radix Sort
+    private static void radixSort(int[] datos) {
+        int max = getMax(datos);
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countSort(datos, exp);
+        }
+    }
+
+    private static int getMax(int[] datos) {
+        int max = datos[0];
+        for (int i = 1; i < datos.length; i++) {
+            if (datos[i] > max) {
+                max = datos[i];
+            }
+        }
+        return max;
+    }
+
+    private static void countSort(int[] datos, int exp) {
+        int n = datos.length;
+        int[] output = new int[n];
+        int[] count = new int[10];
+        Arrays.fill(count, 0);
+
+        for (int i = 0; i < n; i++) {
+            count[(datos[i] / exp) % 10]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[(datos[i] / exp) % 10] - 1] = datos[i];
+            count[(datos[i] / exp) % 10]--;
+        }
+
+        for (int i = 0; i < n; i++) {
+            datos[i] = output[i];
+        }
+    }
+
+    // Implementación de Selection Sort
+    private static void selectionSort(int[] datos) {
+        for (int i = 0; i < datos.length - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < datos.length; j++) {
+                if (datos[j] < datos[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            int temp = datos[minIndex];
+            datos[minIndex] = datos[i];
+            datos[i] = temp;
+        }
+    }
+
+    // Implementación de Shell Sort
+    private static void shellSort(int[] datos) {
+        int n = datos.length;
+        for (int gap = n / 2; gap > 0; gap /= 2) {
+            for (int i = gap; i < n; i += 1) {
+                int temp = datos[i];
+                int j;
+                for (j = i; j >= gap && datos[j - gap] > temp; j -= gap) {
+                    datos[j] = datos[j - gap];
+                }
+                datos[j] = temp;
+            }
+        }
+    }
+
+    // Implementación de Heap Sort
+    private static void heapSort(int[] datos) {
+        int n = datos.length;
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(datos, n, i);
+        }
+        for (int i = n - 1; i > 0; i--) {
+            int temp = datos[0];
+            datos[0] = datos[i];
+            datos[i] = temp;
+            heapify(datos, i, 0);
+        }
+    }
+
+    private static void heapify(int[] datos, int n, int i) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        if (left < n && datos[left] > datos[largest]) {
+            largest = left;
+        }
+        if (right < n && datos[right] > datos[largest]) {
+            largest = right;
+        }
+        if (largest != i) {
+            int swap = datos[i];
+            datos[i] = datos[largest];
+            datos[largest] = swap;
+            heapify(datos, n, largest);
+        }
+    }
+}
